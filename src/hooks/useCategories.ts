@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getCategories } from '@/services/categories'
+import { listCategories } from '@/services/categories'
 import type { Category } from '@/types/category'
 
 export function useCategories() {
@@ -10,17 +10,19 @@ export function useCategories() {
   useEffect(() => {
     let cancelled = false
     setLoading(true)
-    getCategories()
+    listCategories()
       .then((data) => {
         if (!cancelled) setCategories(data)
       })
-      .catch((e) => {
+      .catch((e: Error) => {
         if (!cancelled) setError(e.message)
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
       })
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   return { categories, loading, error }
