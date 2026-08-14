@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useCart } from '@/hooks/useCart'
-import { CartItem } from '@/components/cart/CartItem'
-import { CartSummary } from '@/components/cart/CartSummary'
-import { Button } from '@/components/ui/Button'
+import CartItem from '@/components/cart/CartItem'
+import CartSummary from '@/components/cart/CartSummary'
+import Button from '@/components/ui/Button'
 
 export default function Cart() {
-  const { lines, subtotal } = useCart()
+  const { lines } = useCart()
 
   return (
     <div className="px-4 py-5 pb-24">
@@ -16,7 +16,7 @@ export default function Cart() {
       <h1 className="mb-4 text-xl font-semibold">Your cart</h1>
 
       {lines.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-16 text-center text-muted">
+        <div className="flex flex-col items-center gap-3 py-16 text-center text-gray-500">
           <p>Your cart is empty.</p>
           <Link to="/shop">
             <Button variant="secondary">Continue shopping</Button>
@@ -24,9 +24,17 @@ export default function Cart() {
         </div>
       ) : (
         <>
-          <div className="divide-y divide-line">
+          <div className="divide-y divide-gray-200">
             {lines.map((line) => (
-              <CartItem key={line.productId} line={line} />
+              <div key={line.productId} className="py-3">
+                <CartItem item={{
+                  id: line.productId,
+                  name: line.name,
+                  price: line.price,
+                  image_url: line.image,
+                  quantity: line.quantity,
+                } as any} />
+              </div>
             ))}
           </div>
           <div className="mt-4">

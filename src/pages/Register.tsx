@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { MailCheck } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
-import { Input } from '@/components/ui/Input'
-import { Button } from '@/components/ui/Button'
+import Input from '@/components/ui/Input'
+import Button from '@/components/ui/Button'
 import { authSchema, type AuthFormValues } from '@/lib/validation'
 
 export default function Register() {
@@ -41,13 +41,13 @@ export default function Register() {
         <Helmet>
           <title>Check your email — Store</title>
         </Helmet>
-        <MailCheck size={40} className="text-accent" />
+        <MailCheck size={40} className="text-gray-800" />
         <h1 className="text-xl font-semibold">Check your email</h1>
-        <p className="max-w-xs text-sm text-muted">
-          We sent a verification link to <span className="font-medium text-ink">{sentTo}</span>. Click it to
+        <p className="max-w-xs text-sm text-gray-500">
+          We sent a verification link to <span className="font-medium text-gray-900">{sentTo}</span>. Click it to
           activate your account, then come back and log in.
         </p>
-        <Link to="/login" className="mt-2 text-sm text-accent">Back to log in</Link>
+        <Link to="/login" className="mt-2 text-sm text-blue-600">Back to log in</Link>
       </div>
     )
   }
@@ -61,13 +61,13 @@ export default function Register() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input label="Email" type="email" {...registerField('email')} error={errors.email?.message} />
         <Input label="Password" type="password" {...registerField('password')} error={errors.password?.message} />
-        {error && <p className="text-sm text-ember">{error}</p>}
-        <Button type="submit" variant="secondary" size="lg" className="w-full" disabled={submitting}>
+        {error && <p className="text-sm text-red-600">{error}</p>}
+        <Button type="submit" className="w-full" disabled={submitting}>
           {submitting ? 'Creating account…' : 'Create account'}
         </Button>
       </form>
-      <p className="mt-4 text-center text-sm text-muted">
-        Already have an account? <Link to="/login" className="text-accent">Log in</Link>
+      <p className="mt-4 text-center text-sm text-gray-500">
+        Already have an account? <Link to="/login" className="text-blue-600">Log in</Link>
       </p>
     </div>
   )

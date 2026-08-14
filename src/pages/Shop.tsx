@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 import { useProducts } from '@/hooks/useProducts'
-import { ProductGrid } from '@/components/product/ProductGrid'
+import ProductGrid from '@/components/product/ProductGrid'
 
 export default function Shop() {
   const { products, loading } = useProducts()

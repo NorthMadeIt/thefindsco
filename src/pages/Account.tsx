@@ -4,8 +4,8 @@ import { LogOut, Package, ShieldCheck } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useOrders } from '@/hooks/useOrders'
 import { formatPrice } from '@/lib/currency'
-import { Button } from '@/components/ui/Button'
-import { Skeleton } from '@/components/ui/Skeleton'
+import Button from '@/components/ui/Button'
+import Skeleton from '@/components/ui/Skeleton'
 
 export default function Account() {
   const { user, isAdmin, loading, signOut } = useAuth()
@@ -27,10 +27,10 @@ export default function Account() {
         <title>Your account — Store</title>
       </Helmet>
       <h1 className="mb-1 text-xl font-semibold">Your account</h1>
-      <p className="mb-5 text-sm text-muted">{user.email}</p>
+      <p className="mb-5 text-sm text-gray-500">{user.email}</p>
 
       {isAdmin && (
-        <Link to="/admin" className="mb-5 flex items-center gap-2 rounded-lg bg-ink px-4 py-3 text-sm font-medium text-paper">
+        <Link to="/admin" className="mb-5 flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-3 text-sm font-medium text-white">
           <ShieldCheck size={18} /> Open admin dashboard
         </Link>
       )}
@@ -41,16 +41,16 @@ export default function Account() {
       {ordersLoading ? (
         <Skeleton className="h-16 w-full" />
       ) : orders.length === 0 ? (
-        <p className="text-sm text-muted">No orders yet.</p>
+        <p className="text-sm text-gray-500">No orders yet.</p>
       ) : (
-        <div className="divide-y divide-line rounded-lg border border-line">
+        <div className="divide-y divide-gray-200 rounded-lg border border-gray-200">
           {orders.map((o) => (
             <div key={o.id} className="flex items-center justify-between p-3 text-sm">
               <div>
-                <p className="font-medium">#{o.id.slice(0, 8)}</p>
-                <p className="text-muted capitalize">{o.status}</p>
+                <p className="font-medium">#{String(o.id).slice(0, 8)}</p>
+                <p className="text-gray-500 capitalize">{(o as { status?: string }).status}</p>
               </div>
-              <span className="font-semibold">{formatPrice(o.total_amount)}</span>
+              <span className="font-semibold">{formatPrice((o as { total_amount?: number }).total_amount ?? 0)}</span>
             </div>
           ))}
         </div>
