@@ -21,19 +21,22 @@ export async function listProducts(opts?: { categorySlug?: string; search?: stri
   return data as unknown as Product[]
 }
 
+// Alias used by admin ProductManager
+export const getProducts = listProducts
+
 export async function getProductBySlug(slug: string) {
   const { data, error } = await supabase.from('products').select('*').eq('slug', slug).single()
   if (error) throw error
   return data as unknown as Product
 }
 
-export async function createProduct(input: ProductInput) {
+export async function createProduct(input: ProductInput | Partial<Product>) {
   const { data, error } = await supabase.from('products').insert(input).select().single()
   if (error) throw error
   return data as unknown as Product
 }
 
-export async function updateProduct(id: string, input: Partial<ProductInput>) {
+export async function updateProduct(id: string, input: Partial<ProductInput> | Partial<Product>) {
   const { data, error } = await supabase.from('products').update(input).eq('id', id).select().single()
   if (error) throw error
   return data as unknown as Product

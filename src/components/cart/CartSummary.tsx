@@ -1,8 +1,7 @@
 import { useCartStore } from '../../store/cartStore'
 
 export default function CartSummary() {
-  const { items } = useCartStore()
-  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
+  const subtotal = useCartStore((s) => s.subtotal)()
 
   return (
     <div className="space-y-1 text-sm">

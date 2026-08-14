@@ -17,13 +17,15 @@ export default function ProductManager() {
       .finally(() => setLoading(false))
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    load()
+  }, [])
 
   const handleSave = async (data: Partial<Product>) => {
     if (editing) {
       await updateProduct(editing.id, data)
     } else {
-      await createProduct(data)
+      await createProduct(data as Product)
     }
     load()
   }
@@ -38,7 +40,14 @@ export default function ProductManager() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <p className="text-gray-600">{products.length} products</p>
-        <Button onClick={() => { setEditing(null); setModalOpen(true) }}>Add Product</Button>
+        <Button
+          onClick={() => {
+            setEditing(null)
+            setModalOpen(true)
+          }}
+        >
+          Add Product
+        </Button>
       </div>
       {loading ? (
         <p className="text-gray-500">Loading…</p>
@@ -56,12 +65,22 @@ export default function ProductManager() {
             <tbody>
               {products.map((p) => (
                 <tr key={p.id} className="border-b">
-                  <td className="py-2 pr-4">{p.name}</td>
+                  <td className="py-2 pr-4">{p.title}</td>
                   <td className="py-2 pr-4">${Number(p.price).toFixed(2)}</td>
                   <td className="py-2 pr-4">{p.stock}</td>
                   <td className="py-2 pr-4 space-x-2">
-                    <button className="text-blue-600 hover:underline" onClick={() => { setEditing(p); setModalOpen(true) }}>Edit</button>
-                    <button className="text-red-600 hover:underline" onClick={() => handleDelete(p.id)}>Delete</button>
+                    <button
+                      className="text-blue-600 hover:underline"
+                      onClick={() => {
+                        setEditing(p)
+                        setModalOpen(true)
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button className="text-red-600 hover:underline" onClick={() => handleDelete(p.id)}>
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -69,12 +88,7 @@ export default function ProductManager() {
           </table>
         </div>
       )}
-      <AddEditProductModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        product={editing}
-        onSave={handleSave}
-      />
+      <AddEditProductModal open={modalOpen} onClose={() => setModalOpen(false)} product={editing} onSave={handleSave} />
     </div>
   )
 }

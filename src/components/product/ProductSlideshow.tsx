@@ -16,7 +16,7 @@ export default function ProductSlideshow({ products }: Props) {
   if (!products.length) return null
 
   const current = products[index]
-  const image = current.images?.[0] ?? current.image_url ?? ''
+  const image = current.images?.[0] ?? ''
 
   const go = (dir: number) => {
     setDirection(dir)
@@ -29,21 +29,9 @@ export default function ProductSlideshow({ products }: Props) {
   }
 
   const variants = {
-    enter: (d: number) => ({
-      x: d > 0 ? '40%' : '-40%',
-      scale: 0.92,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      scale: 1,
-      opacity: 1,
-    },
-    exit: (d: number) => ({
-      x: d > 0 ? '-40%' : '40%',
-      scale: 0.92,
-      opacity: 0,
-    }),
+    enter: (d: number) => ({ x: d > 0 ? '40%' : '-40%', scale: 0.92, opacity: 0 }),
+    center: { x: 0, scale: 1, opacity: 1 },
+    exit: (d: number) => ({ x: d > 0 ? '-40%' : '40%', scale: 0.92, opacity: 0 }),
   }
 
   return (
@@ -59,17 +47,11 @@ export default function ProductSlideshow({ products }: Props) {
           transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
           className="absolute inset-0"
         >
-          {image && (
-            <img
-              src={image}
-              alt={current.name}
-              className="w-full h-full object-cover"
-            />
-          )}
+          {image && <img src={image} alt={current.title} className="w-full h-full object-cover" />}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white">
             <p className="text-sm uppercase tracking-widest opacity-80 mb-1">Featured</p>
-            <h2 className="text-2xl md:text-4xl font-bold mb-2">{current.name}</h2>
+            <h2 className="text-2xl md:text-4xl font-bold mb-2">{current.title}</h2>
             <p className="text-lg opacity-90 mb-4">{formatPrice(current.price)}</p>
             <Link
               to={`/products/${current.slug}`}
@@ -84,7 +66,7 @@ export default function ProductSlideshow({ products }: Props) {
       <button
         type="button"
         onClick={() => go(-1)}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 text-gray-900 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-white"
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 text-gray-900 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
         aria-label="Previous"
       >
         <ChevronLeft className="w-5 h-5" />
@@ -92,28 +74,11 @@ export default function ProductSlideshow({ products }: Props) {
       <button
         type="button"
         onClick={() => go(1)}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 text-gray-900 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-white"
+        className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 text-gray-900 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
         aria-label="Next"
       >
         <ChevronRight className="w-5 h-5" />
       </button>
-
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
-        {products.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => {
-              setDirection(i > index ? 1 : -1)
-              setIndex(i)
-            }}
-            className={`w-2 h-2 rounded-full transition-colors ${
-              i === index ? 'bg-white' : 'bg-white/40'
-            }`}
-            aria-label={`Go to slide ${i + 1}`}
-          />
-        ))}
-      </div>
     </div>
   )
 }
