@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
 import { getProductBySlug } from '@/services/products'
 import { trackEvent } from '@/services/analytics'
-import AddToCart from '@/components/product/AddToCart'
-import Skeleton from '@/components/ui/Skeleton'
+import { AddToCart } from '@/components/product/AddToCart'
+import { Skeleton } from '@/components/ui/Skeleton'
 import { formatPrice } from '@/lib/currency'
 import type { Product as ProductType } from '@/types/product'
 
-const SITE_URL = import.meta.env.VITE_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : '')
+const SITE_URL = import.meta.env.VITE_SITE_URL || window.location.origin
 
 export default function Product() {
   const { slug } = useParams<{ slug: string }>()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [product, setProduct] = useState<ProductType | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -49,7 +51,7 @@ export default function Product() {
   }
 
   const productUrl = `${SITE_URL}/products/${product.slug}`
-  const ogImage = product.images?.[0] ?? `${SITE_URL}/og-default.png`
+  const ogImage = product.images[0] ?? `${SITE_URL}/og-default.png`
 
   return (
     <div className="px-4 py-5 pb-24 sm:px-6">
@@ -62,67 +64,77 @@ export default function Product() {
         <meta property="og:description" content={product.description ?? product.title} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:url" content={productUrl} />
+        <meta property="product:price:amount" content={product.price.toString()} />
+        <meta property="product:price:currency" content="USD" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={product.title} />
+        <meta name="twitter:description" content={`${formatPrice(product.price)} — ${product.title}`} />
         <meta name="twitter:image" content={ogImage} />
       </Helmet>
 
-      <button
-        type="button"
-        onClick={() => window.history.back()}
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted hover:text-ink"
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.25 }}
+        className="relative overflow-hidden rounded-card bg-surface shadow-card"
       >
-        <ArrowLeft size={16} /> Back
-      </button>
+        <button
+          onClick={() => navigate((location.state as { from?: string } | null)?.from ?? '/')}
+          className="absolute right-5 top-5 z-10 flex items-center gap-1 rounded-full border border-line bg-surface/90 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide backdrop-blur hover:bg-ink/5"
+        >
+          <ArrowLeft size={14} /> Back
+        </button>
 
-      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid gap-8 lg:grid-cols-2">
-        <div className="aspect-square overflow-hidden rounded-xl bg-gray-100">
-          {product.images?.[0] ? (
-            <img src={product.images[0]} alt={product.title} className="h-full w-full object-cover" />
-          ) : (
-            <div className="flex h-full items-center justify-center text-muted">No image</div>
-          )}
-        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          <div className="flex items-center justify-center bg-gradient-to-br from-accent-light to-paper p-8 sm:aspect-square">
+            <img
+              src={product.images[0] ?? 'https://placehold.co/800x800?text=Product'}
+              alt={product.title}
+              className="max-h-80 w-full object-contain"
+            />
+          </div>
 
-        <div>
-          {product.brand && <p className="text-xs font-semibold uppercase tracking-wide text-muted">{product.brand}</p>}
-          <h1 className="mt-1 text-2xl font-bold tracking-tight">{product.title}</h1>
-          {product.tagline && <p className="mt-1 text-sm text-muted">{product.tagline}</p>}
+          <div className="flex flex-col justify-center p-6 sm:p-10">
+            {product.brand && (
+              <p className="text-xs font-semibold uppercase tracking-wide text-accent">{product.brand}</p>
+            )}
+            <h1 className="mt-1 font-display text-2xl font-semibold">{product.title}</h1>
+            {product.description && (
+              <p className="mt-3 text-sm leading-relaxed text-ink/80">{product.description}</p>
+            )}
 
-          {product.description && (
-            <p className="mt-4 text-sm leading-relaxed text-ink/80">{product.description}</p>
-          )}
+            {product.specs.length > 0 && (
+              <div className="mt-6 grid grid-cols-2 gap-4 border-t border-line pt-5 sm:grid-cols-3">
+                {product.specs.map((spec) => (
+                  <div key={spec.label}>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">{spec.label}</p>
+                    <p className="mt-1 text-xs text-ink/80">{spec.value}</p>
+                  </div>
+                ))}
+              </div>
+            )}
 
-          {product.specs && product.specs.length > 0 && (
-            <div className="mt-6 grid grid-cols-2 gap-4 border-t border-line pt-5 sm:grid-cols-3">
-              {product.specs.map((spec) => (
-                <div key={spec.label}>
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">{spec.label}</p>
-                  <p className="mt-1 text-xs text-ink/80">{spec.value}</p>
-                </div>
-              ))}
+            <div className="mt-6 flex items-center gap-3">
+              <span className="price-tag text-base">{formatPrice(product.price)}</span>
+              {product.compare_at_price && product.compare_at_price > product.price && (
+                <span className="text-sm text-muted line-through">{formatPrice(product.compare_at_price)}</span>
+              )}
             </div>
-          )}
 
-          <div className="mt-6 flex items-center gap-3">
-            <span className="text-xl font-semibold">{formatPrice(product.price)}</span>
-            {product.compare_at_price && product.compare_at_price > product.price && (
-              <span className="text-sm text-muted line-through">{formatPrice(product.compare_at_price)}</span>
+            <div className="mt-4">
+              <AddToCart product={product} />
+            </div>
+
+            {product.includes.length > 0 && (
+              <Link
+                to={`/products/${product.slug}/includes`}
+                state={{ from: location.pathname }}
+                className="mt-6 inline-flex w-fit items-center gap-1 border-t border-line pt-4 text-xs font-semibold uppercase tracking-wide text-accent hover:text-accent-dark"
+              >
+                What's in the box <ArrowUpRight size={14} />
+              </Link>
             )}
           </div>
-
-          <div className="mt-4">
-            <AddToCart product={product} />
-          </div>
-
-          {product.includes && product.includes.length > 0 && (
-            <Link
-              to={`/products/${product.slug}/includes`}
-              className="mt-6 inline-flex w-fit items-center gap-1 border-t border-line pt-4 text-xs font-semibold uppercase tracking-wide text-accent hover:text-accent-dark"
-            >
-              What&apos;s in the box <ArrowUpRight size={14} />
-            </Link>
-          )}
         </div>
       </motion.div>
     </div>
