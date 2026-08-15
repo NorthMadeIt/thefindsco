@@ -12,6 +12,8 @@ function getSessionId() {
   return id
 }
 
+// Writes into FINDSCO's `page_views` table, extended with event_type + session_id
+// so it can carry the full funnel, not just page loads.
 export async function trackEvent(eventType: AnalyticsEventType, opts?: { productId?: string; path?: string }) {
   try {
     await supabase.from('page_views').insert({

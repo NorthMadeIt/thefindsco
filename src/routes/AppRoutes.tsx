@@ -1,6 +1,4 @@
 import { Routes, Route } from 'react-router-dom'
-import { ProtectedRoute } from './ProtectedRoute'
-import AdminLayout from '@/components/admin/AdminLayout'
 
 import Home from '@/pages/Home'
 import Shop from '@/pages/Shop'
@@ -16,14 +14,6 @@ import Register from '@/pages/Register'
 import Account from '@/pages/Account'
 import About from '@/pages/About'
 import NotFound from '@/pages/NotFound'
-
-import AdminDashboard from '@/admin/Dashboard'
-import AdminOrders from '@/admin/Orders'
-import AdminProducts from '@/admin/Products'
-import AdminCategories from '@/admin/Categories'
-import AdminCustomers from '@/admin/Customers'
-import AdminAnalytics from '@/admin/Analytics'
-import AdminSettings from '@/admin/Settings'
 
 export function AppRoutes() {
   return (
@@ -41,24 +31,6 @@ export function AppRoutes() {
       <Route path="/register" element={<Register />} />
       <Route path="/account" element={<Account />} />
       <Route path="/about" element={<About />} />
-
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute adminOnly>
-            <AdminLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<AdminDashboard />} />
-        <Route path="orders" element={<AdminOrders />} />
-        <Route path="products" element={<AdminProducts />} />
-        <Route path="categories" element={<AdminCategories />} />
-        <Route path="customers" element={<AdminCustomers />} />
-        <Route path="analytics" element={<AdminAnalytics />} />
-        <Route path="settings" element={<AdminSettings />} />
-      </Route>
-
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

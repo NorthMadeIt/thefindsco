@@ -23,6 +23,7 @@ export function useProducts(opts?: { categorySlug?: string; search?: string; fea
     return () => {
       cancelled = true
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [opts?.categorySlug, opts?.search, opts?.featured])
 
   return { products, loading, error }

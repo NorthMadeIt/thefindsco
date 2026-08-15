@@ -3,6 +3,9 @@ import type { CartLine } from '@/store/cartStore'
 import type { CheckoutFormValues } from '@/lib/validation'
 import type { OrderItem } from '@/types/order'
 
+// Creates an order. Prices are re-fetched from the products table server-side
+// before insert, so a tampered client-side cart total can never be trusted --
+// always re-verify price here rather than trusting CartLine.price directly.
 export async function createOrder(lines: CartLine[], form: CheckoutFormValues, userId: string | null) {
   const productIds = lines.map((l) => l.productId)
   const { data: products, error: productsError } = await supabase
@@ -20,7 +23,7 @@ export async function createOrder(lines: CartLine[], form: CheckoutFormValues, u
       product_id: l.productId,
       product_name: product.title,
       quantity: l.quantity,
-      price: product.price,
+      price: product.price, // verified server-side price, not the client snapshot
     }
   })
 
@@ -72,9 +75,4 @@ export async function listAllOrders() {
 export async function updateOrderStatus(id: string, status: string) {
   const { error } = await supabase.from('orders').update({ status }).eq('id', id)
   if (error) throw error
-}
-
-// Alias used by admin OrdersTable
-export async function getOrders() {
-  return listAllOrders()
 }

@@ -1,11 +1,13 @@
+import { useEffect } from 'react'
 import { useAuthStore } from '@/store/authStore'
 
 export function useAuth() {
-  const user = useAuthStore((s) => s.user)
-  const isAdmin = useAuthStore((s) => s.isAdmin)
-  const loading = useAuthStore((s) => s.loading)
-  const signOut = useAuthStore((s) => s.signOut)
-  const init = useAuthStore((s) => s.init)
+  const { user, isAdmin, loading, init, signOut } = useAuthStore()
 
-  return { user, isAdmin, loading, signOut, init }
+  useEffect(() => {
+    init()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return { user, isAdmin, loading, signOut }
 }

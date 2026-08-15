@@ -1,27 +1,19 @@
 import { useEffect, useState } from 'react'
-import { getOrders } from '@/services/orders'
-import type { Order } from '@/types/order'
+import { listMyOrders } from '@/services/orders'
 
-export function useOrders() {
-  const [orders, setOrders] = useState<Order[]>([])
+export function useMyOrders(userId: string | null) {
+  const [orders, setOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    let cancelled = false
-    setLoading(true)
-    getOrders()
-      .then((data) => {
-        if (!cancelled) setOrders(data)
-      })
-      .catch((e) => {
-        if (!cancelled) setError(e.message)
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false)
-      })
-    return () => { cancelled = true }
-  }, [])
+    if (!userId) {
+      setLoading(false)
+      return
+    }
+    listMyOrders(userId)
+      .then(setOrders)
+      .finally(() => setLoading(false))
+  }, [userId])
 
-  return { orders, loading, error, setOrders }
+  return { orders, loading }
 }

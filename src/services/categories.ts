@@ -19,12 +19,6 @@ export async function createCategory(input: CategoryInput) {
   return data as unknown as Category
 }
 
-export async function updateCategory(id: string, input: Partial<CategoryInput>) {
-  const { data, error } = await supabase.from('categories').update(input).eq('id', id).select().single()
-  if (error) throw error
-  return data as unknown as Category
-}
-
 export async function deleteCategory(id: string) {
   const { error } = await supabase.from('categories').delete().eq('id', id)
   if (error) throw error
