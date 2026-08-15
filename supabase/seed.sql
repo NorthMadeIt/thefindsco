@@ -6,25 +6,23 @@ insert into categories (name, slug) values
 on conflict (slug) do nothing;
 
 insert into products (
-  title, slug, tagline, brand, price, compare_at_price, category_id, images, specs, includes, description, in_stock, stock, sku, status, featured
+  title, slug, tagline, description, price, compare_at_price, category_id, brand,
+  images, specs, includes, includes_positions, stock, in_stock, sku, status, featured
 )
 select
-  'Sample Wireless Headphones',
-  'sample-wireless-headphones',
-  'Noise-cancelling, all day comfort',
-  'SampleBrand',
-  349,
-  399,
-  c.id,
-  array['https://placehold.co/800x800?text=Product'],
-  '[{"label":"Battery","value":"30 hours"},{"label":"Bluetooth","value":"5.3"},{"label":"Weight","value":"250g"}]'::jsonb,
-  array['Headphones', 'USB-C cable', 'Carry case'],
-  'Noise-cancelling over-ear headphones with 30-hour battery life.',
-  true,
-  25,
-  'AUD-001',
+  'EvoBuds M5',
+  'evobuds-m5',
+  'Logitech EvoBuds M5 use a completely wire-free design.',
+  'Small as these earphones are, they pack a sound you''ll have to hear to believe. Crafted for a supremely comfortable fit and specially designed for travelling.',
+  229.95, null,
+  (select id from categories where slug = 'earbuds'),
+  'Logi',
+  array['https://placehold.co/800x800?text=EvoBuds+M5'],
+  '[{"label":"Bluetooth Version","value":"Bluetooth 5.0 compliant, Class 1"},{"label":"Battery Specification","value":"Built-in Lithium rechargeable battery"},{"label":"Power Supply","value":"5V 650mA USB charging via USB-C socket"}]'::jsonb,
+  array['EvoBuds M5', 'EvoCase', 'USB-C to USB-A Cable'],
+  '[{"x":25,"y":75},{"x":60,"y":50},{"x":85,"y":25}]'::jsonb,
+  25, true,
+  'EAR-001',
   'active',
   true
-from categories c
-where c.slug = 'headphones'
-on conflict (slug) do nothing;
+where not exists (select 1 from products where slug = 'evobuds-m5');

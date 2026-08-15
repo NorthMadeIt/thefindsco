@@ -16,7 +16,10 @@ create table if not exists posts (
 
 alter table posts enable row level security;
 
-create policy "posts_select_published" on posts for select using (published = true or public.is_admin());
-create policy "posts_insert_admin" on posts for insert with check (public.is_admin());
-create policy "posts_update_admin" on posts for update using (public.is_admin());
-create policy "posts_delete_admin" on posts for delete using (public.is_admin());
+drop policy if exists "posts_public_read_published" on posts;
+create policy "posts_public_read_published" on posts
+  for select using (published = true or public.is_admin());
+
+drop policy if exists "posts_admin_write" on posts;
+create policy "posts_admin_write" on posts
+  for all using (public.is_admin()) with check (public.is_admin());

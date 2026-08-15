@@ -1,3 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
-  <text x="10" y="40" font-family="system-ui, sans-serif" font-size="28" font-weight="700" fill="#111">The Finds Co</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#14161A"/>
+  <path d="M9 13h14l-1.4 10.2a2 2 0 0 1-2 1.8H12.4a2 2 0 0 1-2-1.8L9 13Z" stroke="#F7F8FA" stroke-width="1.6"/>
+  <path d="M12 13V10a4 4 0 0 1 8 0v3" stroke="#F7F8FA" stroke-width="1.6"/>
 </svg>

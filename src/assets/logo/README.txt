@@ -1,1 +1,1 @@
-Place store logo assets here.
+-- Replace this file with your own logo (svg/png). Keep the filename or update the import in Header.tsx.
