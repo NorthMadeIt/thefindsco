@@ -1,7 +1,6 @@
 -- Mirrors the hardening migrations already applied directly to the FINDSCO
 -- Supabase project via the Supabase MCP connector.
 
--- 1. Prevent self-promotion to admin.
 create or replace function public.protect_is_admin()
 returns trigger
 language plpgsql
@@ -21,7 +20,6 @@ create trigger profiles_protect_is_admin
   before update on profiles
   for each row execute procedure public.protect_is_admin();
 
--- 2. Orders: stop identity spoofing and forged totals on insert.
 drop policy if exists "orders_insert_any" on orders;
 create policy "orders_insert_any" on orders
   for insert
@@ -65,11 +63,9 @@ create trigger orders_validate_total
   before insert on orders
   for each row execute procedure public.validate_order_total();
 
--- 3. Lock down search_path on SECURITY DEFINER functions.
 alter function public.is_admin() set search_path = public, pg_temp;
 alter function public.handle_new_user() set search_path = public, pg_temp;
 
--- 4. Revoke direct callability via PostgREST /rpc/.
 revoke execute on function public.handle_new_user() from public, anon, authenticated;
 revoke execute on function public.protect_is_admin() from public, anon, authenticated;
 revoke execute on function public.validate_order_total() from public, anon, authenticated;
