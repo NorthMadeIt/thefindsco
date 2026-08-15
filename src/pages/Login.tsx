@@ -28,6 +28,9 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithPassword(values)
     setSubmitting(false)
     if (error) {
+      // Supabase returns this specific message when the account exists but
+      // hasn't clicked the verification link yet -- surface a resend option
+      // instead of a generic "invalid credentials" error.
       if (error.message.toLowerCase().includes('email not confirmed')) {
         setUnconfirmedEmail(values.email)
       } else {

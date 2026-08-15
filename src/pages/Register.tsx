@@ -28,6 +28,12 @@ export default function Register() {
       setError(error.message)
       return
     }
+    // With "Confirm email" required (see README), signUp never returns an
+    // active session -- the account exists but is unusable until the person
+    // clicks the link Supabase just emailed them. Don't navigate anywhere
+    // that assumes they're logged in; show the "check your email" state
+    // instead. If confirmations are somehow off, data.session will be set
+    // and we can skip straight past this.
     if (data.session) {
       window.location.href = '/account'
       return

@@ -14,6 +14,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-paper/90 px-4 backdrop-blur sm:px-6">
       <Link to="/" className="flex shrink-0 items-center gap-2">
+        {/* Drop a transparent PNG/SVG here once you've cut the background --
+            see src/assets/logo/README.txt */}
         <img src={logo} alt="Store logo" className="h-7 w-7" />
         <span className="font-display text-lg font-semibold tracking-tight">Store</span>
       </Link>
