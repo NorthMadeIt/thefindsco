@@ -1,26 +1,42 @@
-import { useCartStore } from '../../store/cartStore'
+import { Minus, Plus, Trash2 } from 'lucide-react'
+import { formatPrice } from '@/lib/currency'
+import { useCart } from '@/hooks/useCart'
+import type { CartLine } from '@/store/cartStore'
 
-export default function CartItem({
-  item,
-}: {
-  item: { id: string; name: string; price: number; image_url?: string | null; quantity: number }
-}) {
-  const setQuantity = useCartStore((s) => s.setQuantity)
-  const removeItem = useCartStore((s) => s.removeItem)
+export function CartItem({ line }: { line: CartLine }) {
+  const { setQuantity, removeItem } = useCart()
 
   return (
-    <div className="flex gap-3 items-center">
-      {item.image_url && <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover rounded" />}
-      <div className="flex-1 min-w-0">
-        <p className="font-medium truncate">{item.name}</p>
-        <p className="text-sm text-gray-500">${Number(item.price).toFixed(2)}</p>
-        <div className="flex items-center gap-2 mt-1">
-          <button className="w-7 h-7 border rounded text-sm" onClick={() => setQuantity(item.id, Math.max(1, item.quantity - 1))}>−</button>
-          <span className="text-sm w-6 text-center">{item.quantity}</span>
-          <button className="w-7 h-7 border rounded text-sm" onClick={() => setQuantity(item.id, item.quantity + 1)}>+</button>
-          <button className="text-red-500 text-xs ml-2" onClick={() => removeItem(item.id)}>
-            Remove
+    <div className="flex gap-3 py-3">
+      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-line/40">
+        {line.image && <img src={line.image} alt={line.name} className="h-full w-full object-cover" />}
+      </div>
+      <div className="flex flex-1 flex-col justify-between">
+        <div className="flex items-start justify-between gap-2">
+          <p className="text-sm font-medium leading-snug">{line.name}</p>
+          <button onClick={() => removeItem(line.productId)} aria-label="Remove item" className="text-muted hover:text-ember">
+            <Trash2 size={16} />
           </button>
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center rounded-full border border-line">
+            <button
+              onClick={() => setQuantity(line.productId, line.quantity - 1)}
+              className="p-1.5"
+              aria-label="Decrease quantity"
+            >
+              <Minus size={14} />
+            </button>
+            <span className="w-5 text-center text-xs font-medium">{line.quantity}</span>
+            <button
+              onClick={() => setQuantity(line.productId, line.quantity + 1)}
+              className="p-1.5"
+              aria-label="Increase quantity"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
+          <span className="text-sm font-semibold">{formatPrice(line.price * line.quantity)}</span>
         </div>
       </div>
     </div>

@@ -1,51 +1,64 @@
 import { Link } from 'react-router-dom'
-import { useCartStore } from '../../store/cartStore'
-import CartItem from './CartItem'
-import CartSummary from './CartSummary'
-import Button from '../ui/Button'
+import { motion, AnimatePresence } from 'framer-motion'
+import { X } from 'lucide-react'
+import { useCart } from '@/hooks/useCart'
+import { CartItem } from './CartItem'
+import { CartSummary } from './CartSummary'
+import { Button } from '@/components/ui/Button'
 
-export default function CartDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const lines = useCartStore((s) => s.lines)
-
-  if (!open) return null
+export function CartDrawer() {
+  const { isOpen, close, lines, subtotal } = useCart()
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-white h-full shadow-xl flex flex-col">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-lg font-semibold">Cart ({lines.length})</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-800">
-            ✕
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
-          {lines.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">Your cart is empty</p>
-          ) : (
-            lines.map((line) => (
-              <CartItem
-                key={line.productId}
-                item={{
-                  id: line.productId,
-                  name: line.name,
-                  price: line.price,
-                  image_url: line.image,
-                  quantity: line.quantity,
-                } as any}
-              />
-            ))
-          )}
-        </div>
-        {lines.length > 0 && (
-          <div className="border-t p-4 space-y-3">
-            <CartSummary />
-            <Link to="/checkout" onClick={onClose}>
-              <Button className="w-full">Checkout</Button>
-            </Link>
-          </div>
-        )}
-      </div>
-    </div>
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            className="fixed inset-0 z-40 bg-ink/40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={close}
+          />
+          <motion.div
+            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-surface p-5"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'tween', duration: 0.22 }}
+          >
+            <div className="mb-2 flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Your cart</h2>
+              <button onClick={close} aria-label="Close cart" className="rounded-full p-1 hover:bg-ink/5">
+                <X size={20} />
+              </button>
+            </div>
+
+            {lines.length === 0 ? (
+              <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center text-muted">
+                <p>Your cart is empty.</p>
+                <Button variant="outline" onClick={close}>
+                  <Link to="/shop">Continue shopping</Link>
+                </Button>
+              </div>
+            ) : (
+              <>
+                <div className="flex-1 divide-y divide-line overflow-y-auto">
+                  {lines.map((line) => (
+                    <CartItem key={line.productId} line={line} />
+                  ))}
+                </div>
+                <CartSummary subtotal={subtotal} />
+                <Link to="/checkout" onClick={close}>
+                  <Button variant="secondary" size="lg" className="mt-4 w-full">
+                    Checkout
+                  </Button>
+                </Link>
+              </>
+            )}
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   )
 }

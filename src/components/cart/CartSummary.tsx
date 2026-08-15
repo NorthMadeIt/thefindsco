@@ -1,21 +1,19 @@
-import { useCartStore } from '../../store/cartStore'
+import { formatPrice } from '@/lib/currency'
 
-export default function CartSummary() {
-  const subtotal = useCartStore((s) => s.subtotal)()
-
+export function CartSummary({ subtotal, shipping = 0 }: { subtotal: number; shipping?: number }) {
   return (
-    <div className="space-y-1 text-sm">
-      <div className="flex justify-between">
+    <div className="space-y-2 border-t border-line pt-4 text-sm">
+      <div className="flex justify-between text-ink/70">
         <span>Subtotal</span>
-        <span>${subtotal.toFixed(2)}</span>
+        <span>{formatPrice(subtotal)}</span>
       </div>
-      <div className="flex justify-between text-gray-500">
+      <div className="flex justify-between text-ink/70">
         <span>Shipping</span>
-        <span>Calculated at checkout</span>
+        <span>{shipping === 0 ? 'Free' : formatPrice(shipping)}</span>
       </div>
-      <div className="flex justify-between font-semibold text-base pt-1 border-t">
+      <div className="flex justify-between text-base font-semibold">
         <span>Total</span>
-        <span>${subtotal.toFixed(2)}</span>
+        <span>{formatPrice(subtotal + shipping)}</span>
       </div>
     </div>
   )
