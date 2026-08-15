@@ -1,33 +1,38 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import type { Product } from '@/types/product'
 import { formatPrice } from '@/lib/currency'
+import type { Product } from '@/types/product'
 
-interface Props {
-  product: Product
-}
-
-export default function ProductCard({ product }: Props) {
-  const image = product.images?.[0] ?? ''
-
+export function ProductCard({ product }: { product: Product }) {
+  const location = useLocation()
+  const onSale = product.compare_at_price && product.compare_at_price > product.price
   return (
-    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }} className="group">
-      <Link to={`/products/${product.slug}`} className="block">
-        <div className="aspect-[3/4] overflow-hidden rounded-xl bg-gray-100 mb-3">
-          {image ? (
-            <img
-              src={image}
+    <Link to={`/products/${product.slug}`} state={{ from: location.pathname }} className="block">
+      <motion.div
+        whileTap={{ scale: 0.98 }}
+        className="overflow-hidden rounded-card bg-surface shadow-card"
+      >
+        <div className="aspect-square overflow-hidden bg-line/40">
+          {product.images[0] && (
+            <motion.img
+              src={product.images[0]}
               alt={product.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              loading="lazy"
+              className="h-full w-full object-cover"
+              whileHover={{ scale: 1.04 }}
+              transition={{ duration: 0.3 }}
             />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">No image</div>
           )}
         </div>
-        <h3 className="font-medium text-gray-900 group-hover:underline line-clamp-2">{product.title}</h3>
-        <p className="text-sm text-gray-600 mt-1">{formatPrice(product.price)}</p>
-      </Link>
-    </motion.div>
+        <div className="p-3">
+          <h3 className="line-clamp-1 text-sm font-medium text-ink">{product.title}</h3>
+          <div className="mt-1.5 flex items-center gap-2">
+            <span className="price-tag">{formatPrice(product.price)}</span>
+            {onSale && (
+              <span className="text-xs text-muted line-through">{formatPrice(product.compare_at_price!)}</span>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </Link>
   )
 }

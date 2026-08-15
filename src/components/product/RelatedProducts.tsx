@@ -1,22 +1,17 @@
 import { useProducts } from '@/hooks/useProducts'
-import ProductGrid from './ProductGrid'
+import { ProductGrid } from './ProductGrid'
+import type { Product } from '@/types/product'
 
-interface Props {
-  excludeId?: string
-  categoryId?: string | null
-  limit?: number
-}
+export function RelatedProducts({ current }: { current: Product }) {
+  const { products, loading } = useProducts({ categorySlug: undefined })
+  const related = products.filter((p) => p.id !== current.id).slice(0, 4)
 
-export default function RelatedProducts({ excludeId, categoryId, limit = 4 }: Props) {
-  const { products, loading } = useProducts({ categoryId, limit: limit + 1 })
-  const filtered = products.filter((p) => p.id !== excludeId).slice(0, limit)
-
-  if (!loading && !filtered.length) return null
+  if (!loading && related.length === 0) return null
 
   return (
-    <section className="mt-16">
-      <h2 className="text-xl font-semibold mb-6">You may also like</h2>
-      <ProductGrid products={filtered} loading={loading} />
-    </section>
+    <div className="mt-8">
+      <h2 className="mb-3 text-base font-semibold">You might also like</h2>
+      <ProductGrid products={related} loading={loading} />
+    </div>
   )
 }
