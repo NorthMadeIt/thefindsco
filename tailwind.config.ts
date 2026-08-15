@@ -1,25 +1,35 @@
 import type { Config } from 'tailwindcss'
 
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: '#faf7f2',
-          100: '#f3ebe0',
-          200: '#e6d5c0',
-          300: '#d4b896',
-          400: '#c19a6b',
-          500: '#b0834f',
-          600: '#9a6d42',
-          700: '#7d5638',
-          800: '#684732',
-          900: '#573c2c',
+        paper: '#F7F8FA',
+        ink: '#14161A',
+        surface: '#FFFFFF',
+        muted: '#6B7280',
+        line: '#E6E8EC',
+        accent: {
+          DEFAULT: '#0F9D8E',
+          dark: '#0B7D71',
+          light: '#E4F5F2',
+        },
+        ember: {
+          DEFAULT: '#FF6B4A',
+          light: '#FFE9E2',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['"Space Grotesk"', 'sans-serif'],
+        body: ['"Inter"', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'monospace'],
+      },
+      borderRadius: {
+        card: '14px',
+      },
+      boxShadow: {
+        card: '0 1px 2px rgba(20,22,26,0.04), 0 8px 24px -12px rgba(20,22,26,0.12)',
       },
     },
   },
