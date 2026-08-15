@@ -4,8 +4,8 @@ import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { supabase } from '@/lib/supabase'
-import Input from '@/components/ui/Input'
-import Button from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/ui/Button'
 import { authSchema, type AuthFormValues } from '@/lib/validation'
 
 export default function Login() {
@@ -53,25 +53,25 @@ export default function Login() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input label="Email" type="email" {...register('email')} error={errors.email?.message} />
         <Input label="Password" type="password" {...register('password')} error={errors.password?.message} />
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-ember">{error}</p>}
         {unconfirmedEmail && (
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm">
+          <div className="rounded-lg border border-line bg-accent-light p-3 text-sm">
             <p>Verify your email before logging in — check the link we sent to {unconfirmedEmail}.</p>
             {resent ? (
-              <p className="mt-1 font-medium">Verification email resent.</p>
+              <p className="mt-1 font-medium text-accent-dark">Verification email resent.</p>
             ) : (
-              <button type="button" onClick={handleResend} className="mt-1 font-medium text-blue-600">
+              <button type="button" onClick={handleResend} className="mt-1 font-medium text-accent hover:text-accent-dark">
                 Resend verification email
               </button>
             )}
           </div>
         )}
-        <Button type="submit" className="w-full" disabled={submitting}>
+        <Button type="submit" variant="secondary" size="lg" className="w-full" disabled={submitting}>
           {submitting ? 'Logging in…' : 'Log in'}
         </Button>
       </form>
-      <p className="mt-4 text-center text-sm text-gray-500">
-        No account? <Link to="/register" className="text-blue-600">Sign up</Link>
+      <p className="mt-4 text-center text-sm text-muted">
+        No account? <Link to="/register" className="text-accent">Sign up</Link>
       </p>
     </div>
   )
