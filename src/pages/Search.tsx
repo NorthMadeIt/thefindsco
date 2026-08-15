@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Search as SearchIcon } from 'lucide-react'
 import { useProducts } from '@/hooks/useProducts'
-import ProductGrid from '@/components/product/ProductGrid'
+import { ProductGrid } from '@/components/product/ProductGrid'
 
 export default function Search() {
   const [term, setTerm] = useState('')
@@ -13,18 +13,19 @@ export default function Search() {
       <Helmet>
         <title>Search — Store</title>
       </Helmet>
-      <div className="mb-4 flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2.5">
-        <SearchIcon size={18} className="text-gray-400" />
+      <div className="mb-4 flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2.5">
+        <SearchIcon size={18} className="text-muted" />
         <input
-          type="search"
+          autoFocus
           value={term}
           onChange={(e) => setTerm(e.target.value)}
           placeholder="Search products…"
           className="w-full bg-transparent text-sm outline-none"
-          autoFocus
         />
       </div>
-      <ProductGrid products={products} loading={loading} />
+      {term ? <ProductGrid products={products} loading={loading} /> : (
+        <p className="py-10 text-center text-sm text-muted">Start typing to search the catalog.</p>
+      )}
     </div>
   )
 }

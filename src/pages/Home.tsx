@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useProducts } from '@/hooks/useProducts'
 import { useCategories } from '@/hooks/useCategories'
-import ProductSlideshow from '@/components/product/ProductSlideshow'
-import ProductGrid from '@/components/product/ProductGrid'
-import Skeleton from '@/components/ui/Skeleton'
+import { ProductSlideshow } from '@/components/product/ProductSlideshow'
+import { ProductGrid } from '@/components/product/ProductGrid'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function Home() {
   const { products, loading } = useProducts()
@@ -16,7 +16,7 @@ export default function Home() {
         <title>Store — Shop the latest</title>
       </Helmet>
 
-      <ProductSlideshow products={products} />
+      <ProductSlideshow products={products} loading={loading} />
 
       {categories.length > 0 && (
         <section className="mt-6">
@@ -27,7 +27,7 @@ export default function Home() {
                   <Link
                     key={c.id}
                     to={`/category/${c.slug}`}
-                    className="shrink-0 rounded-full border border-gray-200 px-4 py-1.5 text-sm font-medium hover:bg-gray-50"
+                    className="shrink-0 rounded-full border border-line px-4 py-1.5 text-sm font-medium hover:bg-ink/5"
                   >
                     {c.name}
                   </Link>
