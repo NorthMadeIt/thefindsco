@@ -1,7 +1,5 @@
-import { clsx } from 'clsx'
+import { cn } from '@/lib/utils'
 
-export default function Skeleton({ className }: { className?: string }) {
-  return (
-    <div className={clsx('animate-pulse bg-gray-200 rounded', className)} />
-  )
+export function Skeleton({ className }: { className?: string }) {
+  return <div className={cn('animate-pulse rounded-md bg-line/70', className)} />
 }

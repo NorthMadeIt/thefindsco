@@ -1,5 +1,5 @@
 import { Link, NavLink } from 'react-router-dom'
-import { Search, ShoppingBag, User } from 'lucide-react'
+import { Search, ShoppingBag, User, LayoutDashboard } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
 import { useCategories } from '@/hooks/useCategories'
 import { useAuth } from '@/hooks/useAuth'
@@ -9,7 +9,7 @@ import logo from '@/assets/logo/store-logo.svg'
 export function Header() {
   const { count, open } = useCart()
   const { categories } = useCategories()
-  const { user } = useAuth()
+  const { user, isAdmin } = useAuth()
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-paper/90 px-4 backdrop-blur sm:px-6">
@@ -33,6 +33,17 @@ export function Header() {
       </nav>
 
       <div className="flex items-center gap-1">
+        {isAdmin && import.meta.env.VITE_ADMIN_URL && (
+          <a
+            href={import.meta.env.VITE_ADMIN_URL}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Admin dashboard"
+            className="hidden items-center gap-1 rounded-full border border-line px-3 py-1.5 text-xs font-semibold uppercase tracking-wide hover:bg-ink/5 sm:flex"
+          >
+            <LayoutDashboard size={14} /> Dashboard
+          </a>
+        )}
         <Link to="/search" aria-label="Search" className="rounded-full p-2 hover:bg-ink/5">
           <Search size={20} />
         </Link>

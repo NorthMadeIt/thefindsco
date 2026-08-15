@@ -1,36 +1,35 @@
 import { NavLink } from 'react-router-dom'
-import { Home, Search, ShoppingBag, User } from 'lucide-react'
+import { Home, Grid2x2, ShoppingBag, User } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
 import { cn } from '@/lib/utils'
 
 const items = [
-  { to: '/', label: 'Home', icon: Home, end: true },
-  { to: '/shop', label: 'Shop', icon: Search },
+  { to: '/', label: 'Home', icon: Home },
+  { to: '/shop', label: 'Shop', icon: Grid2x2 },
   { to: '/cart', label: 'Cart', icon: ShoppingBag },
   { to: '/account', label: 'Account', icon: User },
 ]
 
 export function BottomNav() {
   const { count } = useCart()
-
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-30 flex border-t border-line bg-paper/95 backdrop-blur md:hidden">
-      {items.map(({ to, label, icon: Icon, end }) => (
+    <nav className="fixed inset-x-0 bottom-0 z-30 flex h-16 items-center justify-around border-t border-line bg-surface/95 backdrop-blur pb-[env(safe-area-inset-bottom)] sm:hidden">
+      {items.map(({ to, label, icon: Icon }) => (
         <NavLink
           key={to}
           to={to}
-          end={end}
+          end={to === '/'}
           className={({ isActive }) =>
             cn(
-              'relative flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium',
-              isActive ? 'text-ink' : 'text-ink/50'
+              'relative flex flex-col items-center gap-0.5 px-4 py-1 text-[11px] font-medium',
+              isActive ? 'text-ink' : 'text-muted',
             )
           }
         >
-          <Icon size={20} />
+          <Icon size={22} strokeWidth={2} />
           {label}
           {to === '/cart' && count > 0 && (
-            <span className="absolute right-1/2 top-1 translate-x-3 flex h-4 min-w-4 items-center justify-center rounded-full bg-ember px-1 text-[10px] font-semibold text-white">
+            <span className="absolute right-2 top-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-ember px-1 text-[9px] font-semibold text-white">
               {count}
             </span>
           )}

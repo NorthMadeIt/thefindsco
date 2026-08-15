@@ -1,49 +1,48 @@
 import { Link } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
-import { useCategories } from '@/hooks/useCategories'
+import type { Category } from '@/types/category'
 
-interface Props {
+export function MobileMenu({
+  open,
+  onClose,
+  categories,
+}: {
   open: boolean
   onClose: () => void
-}
-
-export function MobileMenu({ open, onClose }: Props) {
-  const { categories } = useCategories()
-
-  if (!open) return null
-
+  categories: Category[]
+}) {
   return (
-    <div className="fixed inset-0 z-50 md:hidden">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="absolute inset-y-0 left-0 w-72 bg-paper p-6 shadow-xl">
-        <div className="mb-6 flex items-center justify-between">
-          <span className="font-display text-lg font-semibold">Menu</span>
-          <button onClick={onClose} aria-label="Close menu" className="rounded-full p-1 hover:bg-ink/5">
-            <X size={20} />
-          </button>
-        </div>
-        <nav className="flex flex-col gap-1">
-          <Link to="/" onClick={onClose} className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-ink/5">
-            Home
-          </Link>
-          <Link to="/shop" onClick={onClose} className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-ink/5">
-            Shop
-          </Link>
-          {categories.map((c) => (
-            <Link
-              key={c.id}
-              to={`/category/${c.slug}`}
-              onClick={onClose}
-              className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-ink/5"
-            >
-              {c.name}
-            </Link>
-          ))}
-          <Link to="/about" onClick={onClose} className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-ink/5">
-            About
-          </Link>
-        </nav>
-      </div>
-    </div>
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            className="fixed inset-0 z-40 bg-ink/40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+          <motion.div
+            className="fixed inset-y-0 left-0 z-50 w-72 bg-surface p-5"
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={{ type: 'tween', duration: 0.2 }}
+          >
+            <button onClick={onClose} className="mb-6 rounded-full p-1 hover:bg-ink/5">
+              <X size={20} />
+            </button>
+            <nav className="flex flex-col gap-3">
+              {categories.map((c) => (
+                <Link key={c.id} to={`/category/${c.slug}`} onClick={onClose} className="text-base font-medium">
+                  {c.name}
+                </Link>
+              ))}
+            </nav>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   )
 }

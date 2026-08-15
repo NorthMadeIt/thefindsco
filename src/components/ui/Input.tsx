@@ -1,37 +1,34 @@
 import { InputHTMLAttributes, forwardRef } from 'react'
-import { clsx } from 'clsx'
+import { cn } from '@/lib/utils'
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
   error?: string
 }
 
-const Input = forwardRef<HTMLInputElement, Props>(
+export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, id, ...props }, ref) => {
-    const inputId = id || label?.toLowerCase().replace(/\s+/g, '-')
     return (
-      <div className="w-full">
+      <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor={id} className="text-sm font-medium text-ink">
             {label}
           </label>
         )}
         <input
           ref={ref}
-          id={inputId}
-          className={clsx(
-            'w-full border rounded-lg px-3 py-2 text-sm transition-colors',
-            'focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent',
-            error ? 'border-red-500' : 'border-gray-300',
-            className
+          id={id}
+          className={cn(
+            'h-11 rounded-lg border border-line bg-surface px-3.5 text-sm text-ink placeholder:text-muted',
+            'focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-colors',
+            error && 'border-ember focus:border-ember focus:ring-ember',
+            className,
           )}
           {...props}
         />
-        {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+        {error && <span className="text-xs text-ember">{error}</span>}
       </div>
     )
-  }
+  },
 )
-
 Input.displayName = 'Input'
-export default Input
