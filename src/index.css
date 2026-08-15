@@ -3,22 +3,40 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    -webkit-tap-highlight-color: transparent;
-  }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     @apply bg-paper text-ink font-body antialiased;
   }
-  h1, h2, h3, h4 {
-    @apply font-display tracking-tight;
+  h1, h2, h3, h4 { @apply font-display; }
+  :focus-visible {
+    outline: 2px solid theme('colors.accent.DEFAULT');
+    outline-offset: 2px;
   }
 }
 
-@layer utilities {
-  .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+@layer components {
+  /* Signature element: torn-ticket price tag notch, used on price badges */
+  .price-tag {
+    position: relative;
+    @apply font-mono bg-ink text-paper px-3 py-1 rounded-md text-sm inline-flex items-center gap-1;
   }
-  .safe-top {
-    padding-top: env(safe-area-inset-top, 0px);
+  .price-tag::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: theme('colors.paper');
+    border-radius: 999px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }
