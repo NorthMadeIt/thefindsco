@@ -55,6 +55,9 @@ export default function Product() {
 
   return (
     <div className="px-4 py-5 pb-24 sm:px-6">
+      {/* Every product gets its own OG/Twitter metadata so a shared link unfurls
+          as the product itself -- image, name, price -- instead of a generic
+          site preview. */}
       <Helmet>
         <title>{`${product.title} — Store`}</title>
         <meta name="description" content={product.description ?? product.title} />
@@ -78,6 +81,11 @@ export default function Product() {
         transition={{ duration: 0.25 }}
         className="relative overflow-hidden rounded-card bg-surface shadow-card"
       >
+        {/* Back control, top right. Deliberately not navigate(-1) -- relying on
+            actual browser history gets unreliable once the person has
+            clicked around a few times (stale/duplicate entries cause the
+            classic "back button does nothing, then jumps two pages" bug).
+            Instead we carry where we came from explicitly via route state. */}
         <button
           onClick={() => navigate((location.state as { from?: string } | null)?.from ?? '/')}
           className="absolute right-5 top-5 z-10 flex items-center gap-1 rounded-full border border-line bg-surface/90 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide backdrop-blur hover:bg-ink/5"

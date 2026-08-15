@@ -63,6 +63,7 @@ export function ProductSlideshow({ products, loading }: { products: Product[]; l
       tabIndex={0}
     >
       <div className="grid h-full grid-cols-1 sm:grid-cols-2">
+        {/* Text panel */}
         <div className="relative z-10 flex flex-col justify-center gap-3 p-6 sm:p-10">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
@@ -96,6 +97,7 @@ export function ProductSlideshow({ products, loading }: { products: Product[]; l
           </span>
         </div>
 
+        {/* Image panel */}
         <div className="relative overflow-hidden bg-gradient-to-br from-accent-light to-paper">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.img

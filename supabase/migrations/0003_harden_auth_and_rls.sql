@@ -24,7 +24,11 @@ create trigger profiles_protect_is_admin
   before update on profiles
   for each row execute procedure public.protect_is_admin();
 
--- 2. Orders: stop identity spoofing and forged totals on insert.
+-- 2. Orders: stop identity spoofing and forged totals on insert. Previously
+--    `with check (true)` let anyone insert an order with any user_id
+--    (impersonating another shopper) and any total_amount (bypassing the
+--    app's server-side price check -- RLS is the real enforcement boundary,
+--    since the app layer can always be skipped by calling the API directly).
 drop policy if exists "orders_insert_any" on orders;
 create policy "orders_insert_any" on orders
   for insert
@@ -32,6 +36,9 @@ create policy "orders_insert_any" on orders
     user_id is null or user_id = auth.uid()
   );
 
+-- Recompute total_amount from the order's own items + shipping rule
+-- server-side. Mirrors the $8.99 flat / free-over-$100 logic in
+-- src/services/orders.ts -- keep both in sync if you change pricing rules.
 create or replace function public.validate_order_total()
 returns trigger
 language plpgsql
@@ -68,11 +75,13 @@ create trigger orders_validate_total
   before insert on orders
   for each row execute procedure public.validate_order_total();
 
--- 3. Lock down search_path on SECURITY DEFINER functions
+-- 3. Lock down search_path on SECURITY DEFINER functions (prevents
+--    search_path hijacking against elevated-privilege functions).
 alter function public.is_admin() set search_path = public, pg_temp;
 alter function public.handle_new_user() set search_path = public, pg_temp;
 
--- 4. Revoke direct callability via PostgREST /rpc/
+-- 4. These three are trigger functions only -- revoke direct callability via
+--    PostgREST's /rpc/ endpoint. Doesn't affect trigger firing.
 revoke execute on function public.handle_new_user() from public, anon, authenticated;
 revoke execute on function public.protect_is_admin() from public, anon, authenticated;
 revoke execute on function public.validate_order_total() from public, anon, authenticated;

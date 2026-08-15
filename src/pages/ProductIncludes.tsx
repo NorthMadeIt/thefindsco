@@ -8,6 +8,8 @@ import { formatPrice } from '@/lib/currency'
 import { Skeleton } from '@/components/ui/Skeleton'
 import type { Product } from '@/types/product'
 
+// Even fallback positions along the image if a product doesn't have
+// includes_positions set -- keeps the hover dots usable out of the box.
 function fallbackPositions(count: number) {
   return Array.from({ length: count }, (_, i) => ({
     x: 20 + (i * 60) / Math.max(count - 1, 1),
@@ -47,10 +49,9 @@ export default function ProductIncludes() {
     )
   }
 
-  const positions =
-    product.includes_positions.length === product.includes.length
-      ? product.includes_positions
-      : fallbackPositions(product.includes.length)
+  const positions = product.includes_positions.length === product.includes.length
+    ? product.includes_positions
+    : fallbackPositions(product.includes.length)
 
   return (
     <div className="px-4 py-5 pb-10 sm:px-6">
